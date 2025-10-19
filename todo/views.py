@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from todo.models import Task
 
 # Create your views here.
@@ -19,3 +19,16 @@ def mark_as_undo(request, pk):
     task.is_completed = False
     task.save()
     return redirect('home')
+
+def edit_task(request, pk):
+    get_task = get_object_or_404(Task, pk=pk)
+    if request.method == 'POST':
+        new_task = request.POST['task']
+        get_task.task = new_task
+        get_task.save() 
+        return redirect('home')
+    else:
+        context = {
+            'get_task': get_task
+        }
+        return render(request,'edit_task.html',context)
